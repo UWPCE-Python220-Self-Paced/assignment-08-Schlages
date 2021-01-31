@@ -83,15 +83,71 @@ As usual, your code will need to be linted and score 10/10 on Pylint.
 
 # Tips
 
-1. Study the API for DataSet carefully and understand how you can use it in a functional programming style/
+1. Study the API for DataSet carefully and understand how you can use it in a functional programming style.
 
-2. Carefully consider which functional constructs you will use to replace classes. Will closures help? Will currying offer any benefits to this solution? What is the best way to organize your functions?
+1. Carefully consider which functional constructs you will use to replace classes. Will closures help? Will currying offer any benefits to this solution? What is the best way to organize your functions?
 
 1. Consider starting this assignment using your completed lesson 3 assignment, and gradually reworking the code from an object oriented to a functional approach.
 
 1. You will need to remove and replace all classes.
 
-2. Rebuild your code incrementally. Start simple, with the most common case, and add corner cases as you go.
+1. Rebuild your code incrementally. Start simple, with the most common case, and add corner cases as you go.
 
-3. Use unit testing as early as possible in your development work.
+1. Use unit testing as early as possible in your development work.
 
+1. Use Python code to enforce string length constraints for the different fields.
+
+1. *DataSet* includes a *create_index* within its *Table* class, which you can use to implement unique value constraints for *user_id* and *status_id*. Read *Using create_index()* below for some additional steps required.
+
+1. *DataSet* does not have specific functionality for implementing foreign key constraints. One option to consider when adding a new status update, is to try to add the associated *user_id*  to the *Users* table, which should raise a *peewee.IntegrityError* exception. You can trap the exception and handle it by adding the status update (since you know the status is associated to a valid *user_id*). For example:
+
+```
+try:
+    Users.insert(user_id='user_id_from_new_status_update')
+# If an IntegrityError exception is raised, the foreign 
+# constraint has been satisfied
+except peewee.IntegrityError:
+    Status.insert(#NEW STATUS UPDATE GOES HERE)
+```
+# Using create_index()
+
+The *peewee* module has a bug that was reported and fixed here:
+
+https://github.com/coleifer/peewee/issues/2319 
+
+As of the time of this writing, the fix is not yet part of the *peewee* module that is installed using *pip*. However, you can install it directly from Github (yes, you will hopefully be learning something new if you try this) by doing the following:
+
+1. Uninstall *peewee*:
+```
+python -m pip uninstall peewee
+```
+
+2. Install *peewee* directly from its master Github repository (do this in a separate folder, not within your assignment's folder):
+```
+git clone https://github.com/coleifer/peewee.git
+cd peewee
+python setup.py install
+```
+
+3. *create_index()* requires that the column you're trying to make unique already exists, so you will need to create a dummy record first, use *create_index()* to make the desired column(s) unique and then delete the dummy record. Here is an example:
+
+```
+from playhouse.dataset import DataSet
+from peewee import IntegrityError
+
+ds = DataSet('sqlite:///socialnetwork2.db')
+
+Users = ds["UsersTable"]
+
+# Create a dummy record to have a 'user_id' column
+# before making the column unique with 'create_index()'.
+Users.insert(user_id='test')
+Users.create_index(['user_id'], unique=True)
+# Delete the dummy record afterwards.
+Users.delete(user_id='test')
+
+# Some sample add operations
+Users.insert(user_id='atumble', user_name='Aldus', user_last_name='Tumbledoor', user_email='atumbled@uw.edu')
+# The next insert will fail because of the UNIQUE constraint
+Users.insert(user_id='atumble', user_name='Aldus', user_last_name='Tumbledoors', user_email='taldus2@uw.edu')
+```
