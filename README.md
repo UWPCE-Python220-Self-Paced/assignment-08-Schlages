@@ -122,15 +122,15 @@ As of the time of this writing, the fix is not yet part of the *peewee* module t
 python -m pip uninstall peewee
 ```
 
-1. Install *peewee* directly from its master Github repository (do this in a separate folder, not within your assignment's folder):
+2. Install *peewee* directly from its master Github repository (do this in a separate folder, not within your assignment's folder):
 ```
 git clone https://github.com/coleifer/peewee.git
 cd peewee
 python setup.py install
 ```
-1. You can safely delete the *peewee* directory created in the previous step after installing. It is not needed anymore and it should not be part of the pull request for your assignment.
+3. You can safely delete the *peewee* directory created in the previous step after installing. It is not needed anymore and it should not be part of the pull request for your assignment.
 
-1. *create_index()* requires that the column you're trying to make unique already exists, so you will need to create a dummy record first, use *create_index()* to make the desired column(s) unique and then delete the dummy record. Here is an example:
+4. *create_index()* requires that the column you're trying to make unique already exists, so you will need to create a dummy record first, use *create_index()* to make the desired column(s) unique and then delete the dummy record. Here is an example:
 
 ```
 from playhouse.dataset import DataSet
