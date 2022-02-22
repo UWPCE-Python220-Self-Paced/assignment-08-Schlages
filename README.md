@@ -11,7 +11,7 @@ After some investigation, you have found that PeeWee now supports an extension t
 
 With this in mind, you are going to embark on a project to rewrite your database code from assignment 3, now using a functional approach. All of the material in this lesson should help you to do this.
 
-Your starting point will be the code you finished on Assignment 3. ANd you can use the same data you used in lesson 3 too (unless you prefer to generate some new data).
+Your starting point will be the code you finished on Assignment 3. And you can use the same data you used in lesson 3 too (unless you prefer to generate some new data).
 
 
 # What to do
@@ -24,45 +24,45 @@ Your starting point will be the code you finished on Assignment 3. ANd you can u
 
 1. Using your analysis form the preceding step, start to code your functional solution.
 
-1. Decide when you will best be able to use unit tests. Can you use your unit tests from lesson 3? Will they need to be amended?
+1. Decide how you will best be able to use unit tests. Can you use your unit tests from lesson 3? Will they need to be amended?
 
 1. Your application should be robust: make sure you add all appropriate error handling and logging that is needed.
 
-For reference, here are the steps form lesson 3 that you should use in this assignment as you rewrite the code:
+For reference, here are the steps from lesson 3 that you should use in this assignment as you rewrite the code:
 
 1. Reuse the lesson 3 SQL database that contains both user account and well as user status data:
 
-* Implement your database model in a separate file, *socialnetwork_model.py*.
-* The database will have two tables: *Users* and *Status*.
-* The *Users* table will have the following fields:
+* Implement your database model in a separate file, ``socialnetwork_model.py``.
+* The database will have two tables: ``Users`` and ``Status``.
+* The ``Users`` table will have the following fields:
     * user_id (Primary Key, limited to 30 characters).
     * user_name (Limited to 30 characters).
     * user_last_name (Limited to 100 characters).
     * user_email.
-* The *Status* table will have these fields:
+* The ``Status`` table will have these fields:
     * status_id (Primary Key).
-    * user_id (Foreign Key from the *Users* table).
+    * user_id (Foreign Key from the ``Users`` table).
     * status_text.
 
-The fact that *UserID* will be a foreign key in the *Status* table means that you cannot add a status for a user that does not exist in the *Users* table.
+The fact that ``UserID`` will be a foreign key in the ``Status`` table means that you cannot add a status for a user that does not exist in the ``Users`` table.
 
-1. *UserStatusCollection* will have **every operation** (add, modify, delete, search) needed to interact with the database. This means no dumping the entire database into a dictionary!
+1. ``UserStatusCollection`` will have **every operation** (add, modify, delete, search) needed to interact with the database. This means no dumping the entire database into a dictionary!
 
 2. Reimplement the feature to load the CSV files for users and user status to populate your SQL database.
 
-3. Your database needs to be setup so that erasing a user from the *Users* table will cause all status updates from that user in the *Status* table to be deleted. Naturally, a new status update cannot be created for a user that does not exist.
+3. Your database needs to be setup so that erasing a user from the ``Users`` table will cause all status updates from that user in the ``Status`` table to be deleted. Naturally, a new status update cannot be created for a user that does not exist.
 
-4. Ensure you can run unit tests for the code on *users.py* and *user_status.py*. Test coverage should be at at 100% for each of the two files.
+4. Ensure you can run unit tests for the code on ``users.py`` and ``user_status.py``. Test coverage should be at at 100% for each of the two files.
 
 # Submission #
 
 The following files need to be submitted:
 
-* *main.py*.
-* *menu.py*.
-* *user_status.py*.
-* *users.py*.
-* *test_unit.py*.
+* ``main.py``
+* ``menu.py``
+* ``user_status.py``
+* ``users.py``
+* ``test_main.py``.
 
 Any other files required by your implementation of this assignment.
 
@@ -71,12 +71,13 @@ Any other files required by your implementation of this assignment.
 * Your code needs to be able to create a new database file and the corresponding tables if one does not exist.
 * For testing, if your test database does not run from memory, you will need to add code to delete the .db file that is created after every test run.
 
+
 # How will your code be evaluated?
 
 * The instructor will delete any .db files included in the submission. This is to make sure your code can create and initialize a database file from scratch.
-* The instructor will run *menu.py* and load sample CSV files into your SQL database. A SQL database inspector will be use to look at the table structure of your database, verify that the correct fields have been set as primary keys in each table, as well as that *UserID* has been set as foreign key in the *Status* table.
-* The instructor will interact with your database using the user interface in *menu.py* and try to add, modify, search and delete data, checking that this is also reflecting in the database file.
-* The instructor would also try common error conditions: Adding a duplicated user_id, deleting a non-existing user, etc. Your code should not crash due to these errors and please, no bare exceptions (most database errors will be *IntegrityError* exceptions).
+* The instructor will run ``menu.py`` and load sample CSV files into your SQL database. A SQL database inspector will be use to look at the table structure of your database, verify that the correct fields have been set as primary keys in each table, as well as that ``UserID`` has been set as foreign key in the ``Status`` table.
+* The instructor will interact with your database using the user interface in ``menu.py`` and try to add, modify, search and delete data, checking that this is also reflecting in the database file.
+* The instructor would also try common error conditions: Adding a duplicated user_id, deleting a non-existing user, etc. Your code should not crash due to these errors and please, no bare exceptions (most database errors will be ``IntegrityError`` exceptions).
 * The instructor will look at your code and verify that all operations are being performed directly in the SQL database.
 
 As usual, your code will need to be linted and score 10/10 on Pylint.
@@ -97,9 +98,9 @@ As usual, your code will need to be linted and score 10/10 on Pylint.
 
 1. Use Python code to enforce string length constraints for the different fields.
 
-1. *DataSet* includes a *create_index* method within its *Table* class, which you can use to implement unique value constraints for *user_id* and *status_id*. Read *Using create_index()* below for some additional steps required.
+1. ``DataSet`` includes a ``create_index`` method within its ``Table`` class, which you can use to implement unique value constraints for ``user_id`` and ``status_id``. Read ``Using create_index()`` below for some additional steps required.
 
-1. *DataSet* does not have specific functionality for implementing foreign key constraints. One option to consider when adding a new status update, is to try to add the associated *user_id*  to the *Users* table, which should raise a *peewee.IntegrityError* exception. You can trap the exception and handle it by adding the status update (since you know the status is associated to a valid *user_id*). For example:
+1. ``DataSet`` does not have specific functionality for implementing foreign key constraints. One option to consider when adding a new status update, is to try to add the associated ``user_id``  to the ``Users`` table, which should raise a ``peewee.IntegrityError`` exception. You can trap the exception and handle it by adding the status update (since you know the status is associated to a valid ``user_id``). For example:
 
 ```
 try:
@@ -111,26 +112,26 @@ except peewee.IntegrityError:
 ```
 # Using create_index()
 
-The *peewee* module has a bug that was reported and fixed here:
+The ``peewee`` module has a bug that was reported and fixed here:
 
 https://github.com/coleifer/peewee/issues/2319 
 
-As of the time of this writing, the fix is not yet part of the *peewee* module that is installed using *pip*. However, you can install it directly from Github (yes, you will hopefully be learning something new if you try this) by doing the following:
+As of the time of this writing, the fix is not yet part of the ``peewee`` module that is installed using ``pip``. However, you can install it directly from Github (yes, you will hopefully be learning something new if you try this) by doing the following:
 
-1. Uninstall *peewee*:
+1. Uninstall ``peewee``:
 ```
 python -m pip uninstall peewee
 ```
 
-2. Install *peewee* directly from its master Github repository (do this in a separate folder, not within your assignment's folder):
+2. Install ``peewee`` directly from its master Github repository (do this in a separate folder, not within your assignment's folder):
 ```
 git clone https://github.com/coleifer/peewee.git
 cd peewee
 python setup.py install
 ```
-3. You can safely delete the *peewee* directory created in the previous step after installing. It is not needed anymore and it should not be part of the pull request for your assignment.
+3. You can safely delete the ``peewee`` directory created in the previous step after installing. It is not needed anymore and it should not be part of the pull request for your assignment.
 
-4. *create_index()* requires that the column you're trying to make unique already exists, so you will need to create a dummy record first, use *create_index()* to make the desired column(s) unique and then delete the dummy record. Here is an example:
+4. ``create_index()`` requires that the column you're trying to make unique already exists, so you will need to create a dummy record first, use ``create_index()`` to make the desired column(s) unique and then delete the dummy record. Here is an example:
 
 ```
 from playhouse.dataset import DataSet
